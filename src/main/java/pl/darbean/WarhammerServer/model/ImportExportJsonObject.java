@@ -1,5 +1,4 @@
 package pl.darbean.WarhammerServer.model;
-import java.util.List;
 
 import pl.darbean.WarhammerServer.model.attributes.Attrib;
 import pl.darbean.WarhammerServer.model.hero.Hero;
@@ -9,6 +8,8 @@ import pl.darbean.WarhammerServer.model.inventory.Weapon;
 import pl.darbean.WarhammerServer.model.pouch.Pouch;
 import pl.darbean.WarhammerServer.model.skills.Skill;
 import pl.darbean.WarhammerServer.model.talents.Talent;
+
+import java.util.List;
 
 public class ImportExportJsonObject {
 
@@ -21,6 +22,10 @@ public class ImportExportJsonObject {
     private Pouch pouch;
     private List<Item> items;
     private List<Weapon> weapons;
+
+    public ImportExportJsonObject() {
+
+    }
 
     public ImportExportJsonObject(Hero hero, List<Attrib> attribs, List<Skill> basicSkills, List<Skill> advancedSkills, List<Talent> talents, List<ArmoryStaff> armoryStaffsList, Pouch pouch, List<Item> items, List<Weapon> weapons) {
         this.hero = hero;

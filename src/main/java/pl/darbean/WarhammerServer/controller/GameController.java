@@ -24,9 +24,6 @@ public class GameController {
     String registerCharacter(@RequestBody ImportExportJsonObject heroData) {
         processHeroData(heroData);
         sessionHeroes.put(heroData.getHero().getName() + heroData.getHero().getSurname(), heroData);
-        for (ImportExportJsonObject value : sessionHeroes.values()) {
-            System.out.println(value.getHero().getNameAndSurname());
-        }
         return "OK";
     }
 

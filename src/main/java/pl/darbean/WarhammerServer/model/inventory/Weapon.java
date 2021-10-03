@@ -4,12 +4,30 @@ import pl.darbean.WarhammerServer.model.attributes.Attrib;
 
 public class Weapon {
 
+    private long id;
+    private long heroId;
     private String weaponName;
     private int weight;
     private WaeponRangeLength rangeLength;
     private int damage;
     private boolean withStrengthBonus;
     private String attribs;
+
+    public long getId() {
+        return id;
+    }
+
+    public void setId(long id) {
+        this.id = id;
+    }
+
+    public long getHeroId() {
+        return heroId;
+    }
+
+    public void setHeroId(long heroId) {
+        this.heroId = heroId;
+    }
 
     public String getWeaponName() {
         return weaponName;
