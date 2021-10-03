@@ -1,5 +1,7 @@
 package pl.darbean.WarhammerServer.controller;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -17,13 +19,24 @@ import java.util.Map;
 @RestController
 public class GameController {
 
+    private Logger logger = LoggerFactory.getLogger(GameController.class);
+
+
     public final static Map<String, ImportExportJsonObject> sessionHeroes = new HashMap<>();
 
     @PostMapping(value = "/postCharacterData", consumes = "application/json")
     public @ResponseBody
     String registerCharacter(@RequestBody ImportExportJsonObject heroData) {
         processHeroData(heroData);
-        sessionHeroes.put(heroData.getHero().getName() + heroData.getHero().getSurname(), heroData);
+        logger.info("Received data for character {}", heroData.getHero().getNameAndSurname());
+        return "OK";
+    }
+
+    @PostMapping(value = "/tsopCharacterData", consumes = "application/json")
+    public @ResponseBody
+    String deregisterCharacter(@RequestBody ImportExportJsonObject heroData) {
+        sessionHeroes.remove(heroData.getHero().getNameAndSurname());
+        logger.info("Character {} go away", heroData.getHero().getNameAndSurname());
         return "OK";
     }
 
@@ -46,7 +59,7 @@ public class GameController {
                 weapon.setDamage(weapon.getDamage(attributeMap.get(CharacterAttribute.S)));
             }
         }
-        sessionHeroes.put(heroData.getHero().getName() + heroData.getHero().getSurname(), heroData);
+        sessionHeroes.put(heroData.getHero().getNameAndSurname(), heroData);
     }
 
     public Map<String, ImportExportJsonObject> getMockDB() {

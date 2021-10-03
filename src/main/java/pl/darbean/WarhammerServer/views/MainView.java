@@ -3,6 +3,7 @@ package pl.darbean.WarhammerServer.views;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.accordion.Accordion;
 import com.vaadin.flow.component.applayout.AppLayout;
+import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.grid.GridVariant;
 import com.vaadin.flow.component.html.Label;
@@ -47,7 +48,11 @@ public class MainView extends AppLayout {
         Tabs tabs = new Tabs(tabsList.toArray(new Tab[]{}));
         tabs.setOrientation(Tabs.Orientation.HORIZONTAL);
         setPrimarySection(AppLayout.Section.DRAWER);
-        addToNavbar(new Label("Warhammer Player Server"), tabs);
+        Button resetData = new Button("Resetuj");
+        resetData.addClickListener(buttonClickEvent -> {
+            GameController.sessionHeroes.clear();
+        });
+        addToNavbar(new Label("Warhammer Player Server"), tabs, resetData);
         if (!values.isEmpty()) {
             setContent(createTableForCategory(HeroCategories.BASIC_DATA, values));
         }
