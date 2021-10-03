@@ -7,6 +7,9 @@ import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.grid.GridVariant;
 import com.vaadin.flow.component.html.Label;
+import com.vaadin.flow.component.orderedlayout.FlexComponent;
+import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
+import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.tabs.Tab;
 import com.vaadin.flow.component.tabs.Tabs;
 import com.vaadin.flow.router.Route;
@@ -114,50 +117,57 @@ public class MainView extends AppLayout {
         return accordion;
     }
 
-    private Accordion createArmoryAccordeon(List<ImportExportJsonObject> values) {
-        Accordion accordion = new Accordion();
-        accordion.close();
+    private Component createArmoryAccordeon(List<ImportExportJsonObject> values) {
+        HorizontalLayout horizontalLayout = new HorizontalLayout();
         for (ImportExportJsonObject value : values) {
+            VerticalLayout verticalLayout = new VerticalLayout();
+            verticalLayout.add(new Label(value.getHero().getNameAndSurname()));
             Grid<ArmoryStaff> armor = new Grid<>(ArmoryStaff.class, false);
             armor.addThemeVariants(GridVariant.LUMO_NO_BORDER,
                     GridVariant.LUMO_NO_ROW_BORDERS, GridVariant.LUMO_ROW_STRIPES);
             armor.setItems(value.getArmoryStaffsList());
-            armor.addColumn(armoryStaff -> armoryStaff.getPlace().getLabel(), "place").setWidth("200px").setFlexGrow(0);
+            armor.addColumn(armoryStaff -> armoryStaff.getPlace().getLabel(), "place").setWidth("100px").setFlexGrow(0);
             armor.addColumn("armorName").setHeader("Nazwa").setWidth("300px").setFlexGrow(0);
             armor.addColumn(armoryStaff -> armoryStaff.getArmorPoints()).setHeader("Punkty obrony").setWidth("200px").setFlexGrow(0);
-            accordion.add(value.getHero().getNameAndSurname(), armor);
+            verticalLayout.add(armor);
+            horizontalLayout.add(verticalLayout);
         }
-        return accordion;
+        return horizontalLayout;
     }
 
-    private Accordion createTalentsAccordeon(List<ImportExportJsonObject> values) {
-        Accordion accordion = new Accordion();
-        accordion.close();
+    private Component createTalentsAccordeon(List<ImportExportJsonObject> values) {
+        HorizontalLayout horizontalLayout = new HorizontalLayout();
         for (ImportExportJsonObject value : values) {
+            VerticalLayout verticalLayout = new VerticalLayout();
+            verticalLayout.add(new Label(value.getHero().getNameAndSurname()));
             Grid<Talent> talents = new Grid<>(Talent.class, false);
             talents.addThemeVariants(GridVariant.LUMO_NO_BORDER,
                     GridVariant.LUMO_NO_ROW_BORDERS, GridVariant.LUMO_ROW_STRIPES);
             talents.setItems(value.getTalents());
             talents.addColumn("name").setHeader("Nazwa").setWidth("200px").setFlexGrow(0);
             talents.addColumn("total").setHeader("Poziom").setAutoWidth(true).setWidth("200px").setFlexGrow(0);
-            accordion.add(value.getHero().getNameAndSurname(), talents);
+            verticalLayout.add(talents);
+            horizontalLayout.add(verticalLayout);
         }
-        return accordion;
+        return horizontalLayout;
     }
 
-    private Accordion createAdvencedSkillsAccordeon(List<ImportExportJsonObject> values) {
-        Accordion accordion = new Accordion();
-        accordion.close();
+    private Component createAdvencedSkillsAccordeon(List<ImportExportJsonObject> values) {
+        HorizontalLayout horizontalLayout = new HorizontalLayout();
         for (ImportExportJsonObject value : values) {
+            VerticalLayout verticalLayout = new VerticalLayout();
+            verticalLayout.add(new Label(value.getHero().getNameAndSurname()));
+
             Grid<Skill> advSkillGrid = new Grid<>(Skill.class, false);
             advSkillGrid.addThemeVariants(GridVariant.LUMO_NO_BORDER,
                     GridVariant.LUMO_NO_ROW_BORDERS, GridVariant.LUMO_ROW_STRIPES);
             advSkillGrid.setItems(value.getAdvancedSkills());
             advSkillGrid.addColumn("label").setHeader("Nazwa").setWidth("200px").setFlexGrow(0);
             advSkillGrid.addColumn("advances").setHeader("Poziom").setAutoWidth(true).setWidth("200px").setFlexGrow(0);
-            accordion.add(value.getHero().getNameAndSurname(), advSkillGrid);
+            verticalLayout.add(advSkillGrid);
+            horizontalLayout.add(verticalLayout);
         }
-        return accordion;
+        return horizontalLayout;
     }
 
     private Component createBasicSkillsDataTable(List<List<Skill>> collect, List<Hero> heroList) {
