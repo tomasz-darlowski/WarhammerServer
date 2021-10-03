@@ -3,11 +3,11 @@ package pl.darbean.WarhammerServer.views;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.accordion.Accordion;
 import com.vaadin.flow.component.applayout.AppLayout;
+import com.vaadin.flow.component.applayout.DrawerToggle;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.grid.GridVariant;
 import com.vaadin.flow.component.html.Label;
-import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.tabs.Tab;
@@ -27,6 +27,8 @@ import pl.darbean.WarhammerServer.model.skills.BasicSkill;
 import pl.darbean.WarhammerServer.model.skills.Skill;
 import pl.darbean.WarhammerServer.model.talents.Talent;
 
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -44,24 +46,43 @@ public class MainView extends AppLayout {
         for (HeroCategories category : HeroCategories.values()) {
             Tab e = new Tab(category.getLabel());
             e.getElement().addEventListener("click", domEvent -> {
-                setContent(createTableForCategory(category, values));
+                setContent(createTableForCategory(category));
             });
             tabsList.add(e);
         }
         Tabs tabs = new Tabs(tabsList.toArray(new Tab[]{}));
         tabs.setOrientation(Tabs.Orientation.HORIZONTAL);
         setPrimarySection(AppLayout.Section.DRAWER);
+        setDrawerOptions();
+        setDrawerOpened(true);
+        addToNavbar(new DrawerToggle());
+        addToNavbar(new Label("Warhammer Player Server"), tabs);
+        if (!values.isEmpty()) {
+            setContent(createTableForCategory(HeroCategories.BASIC_DATA));
+        }
+    }
+
+    private Component setDrawerOptions() {
+        VerticalLayout layout = new VerticalLayout();
+        layout.add(new Label(getAddress()));
         Button resetData = new Button("Resetuj");
         resetData.addClickListener(buttonClickEvent -> {
             GameController.sessionHeroes.clear();
         });
-        addToNavbar(new Label("Warhammer Player Server"), tabs, resetData);
-        if (!values.isEmpty()) {
-            setContent(createTableForCategory(HeroCategories.BASIC_DATA, values));
+        layout.add(resetData);
+        return layout;
+    }
+
+    private String getAddress() {
+        try {
+            return InetAddress.getLocalHost().getHostAddress();
+        } catch (UnknownHostException e) {
+            return "";
         }
     }
 
-    private Component createTableForCategory(HeroCategories category, List<ImportExportJsonObject> values) {
+    private Component createTableForCategory(HeroCategories category) {
+        List<ImportExportJsonObject> values = new ArrayList<>(GameController.sessionHeroes.values());
         List<Hero> heroList = values.stream().map(importExportJsonObject -> importExportJsonObject.getHero()).collect(Collectors.toList());
         switch (category) {
             case BASIC_DATA:
