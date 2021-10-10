@@ -21,10 +21,10 @@ public class Skills {
     public Skills(List<Skill> basicSkillsByHeroId, List<Skill> advancedSkills) {
         this();
         for (Skill skill : basicSkillsByHeroId) {
-            basicSkillMap.put(BasicSkill.getByLabel(skill.getLabel()), skill);
+            basicSkillMap.put(BasicSkill.getByLabel(skill.getName()), skill);
         }
         for (Skill skill : advancedSkills) {
-            advancedSkillMap.put(skill.getLabel(), skill);
+            advancedSkillMap.put(skill.getName(), skill);
         }
 
     }

@@ -7,11 +7,10 @@ public class Skill {
     public static final String SKILL_ID = "SKILL_ID";
 
     private CharacterAttribute attribute;
-    private String label;
+    private String name;
     private int advances = 0;
     private String description;
     private String specialisation = "";
-    private boolean isSkillNeedSpecification = false;
     private boolean isBasicSkill = false;
 
     public Skill() {
@@ -19,11 +18,10 @@ public class Skill {
 
     public Skill(BasicSkill skill) {
         this.attribute = skill.getBasicAttribute();
-        this.label = skill.getLabel();
+        this.name = skill.getLabel();
         this.advances = 0;
         this.description = "";
         this.specialisation = "";
-        this.isSkillNeedSpecification = skill.isSkillNeedSpecification();
         this.isBasicSkill = true;
     }
 
@@ -35,12 +33,12 @@ public class Skill {
         this.attribute = attribute;
     }
 
-    public String getLabel() {
-        return label;
+    public String getName() {
+        return name;
     }
 
-    public void setLabel(String label) {
-        this.label = label;
+    public void setName(String name) {
+        this.name = name;
     }
 
     public int getAdvances() {
@@ -61,14 +59,6 @@ public class Skill {
 
     public void setSpecialisation(String specialisation) {
         this.specialisation = specialisation;
-    }
-
-    public boolean isSkillNeedSpecification() {
-        return isSkillNeedSpecification;
-    }
-
-    public void setSkillNeedSpecification(boolean skillNeedSpecification) {
-        isSkillNeedSpecification = skillNeedSpecification;
     }
 
     public boolean isBasicSkill() {
@@ -92,6 +82,6 @@ public class Skill {
     }
 
     public String getItemLabel() {
-        return getLabel();
+        return getName();
     }
 }

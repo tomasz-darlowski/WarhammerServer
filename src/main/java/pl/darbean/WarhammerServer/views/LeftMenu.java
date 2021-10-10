@@ -9,7 +9,7 @@ public class LeftMenu {
         VerticalLayout layout = new VerticalLayout();
         layout.add(new RouterLink("Strona główna", MainView.class));
         layout.add(new RouterLink("Sesja graczy", PlayerSessionView.class));
-        layout.add(new RouterLink("Inicjatywa i potwory (WiP)", MainView.class));
+        layout.add(new RouterLink("Inicjatywa i potwory (WiP)", FightView.class));
         return layout;
     }
 }

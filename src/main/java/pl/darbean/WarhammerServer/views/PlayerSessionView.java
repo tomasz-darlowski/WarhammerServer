@@ -1,8 +1,7 @@
 package pl.darbean.WarhammerServer.views;
 
 import com.vaadin.flow.component.Component;
-import com.vaadin.flow.component.accordion.Accordion;
-import com.vaadin.flow.component.accordion.AccordionPanel;
+import com.vaadin.flow.component.Unit;
 import com.vaadin.flow.component.applayout.AppLayout;
 import com.vaadin.flow.component.applayout.DrawerToggle;
 import com.vaadin.flow.component.button.Button;
@@ -12,10 +11,14 @@ import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.grid.GridVariant;
 import com.vaadin.flow.component.html.Anchor;
 import com.vaadin.flow.component.html.Label;
+import com.vaadin.flow.component.html.Span;
+import com.vaadin.flow.component.listbox.ListBox;
+import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.tabs.Tab;
 import com.vaadin.flow.component.tabs.Tabs;
+import com.vaadin.flow.data.renderer.ComponentRenderer;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.theme.Theme;
 import com.vaadin.flow.theme.material.Material;
@@ -42,6 +45,8 @@ import java.util.stream.Collectors;
 @Theme(value = Material.class, variant = Material.DARK)
 @CssImport("./style.css")
 public class PlayerSessionView extends AppLayout {
+
+    private int idx = 0;
 
     public PlayerSessionView() {
         List<ImportExportJsonObject> values = new ArrayList<>(GameController.sessionHeroes.values());
@@ -96,96 +101,236 @@ public class PlayerSessionView extends AppLayout {
         }
     }
 
-    private Accordion createInventoryAccordeon(List<ImportExportJsonObject> values) {
-        Accordion accordion = new Accordion();
-        accordion.close();
+    private Component createInventoryAccordeon(List<ImportExportJsonObject> values) {
+        HorizontalLayout horizontalLayout = new HorizontalLayout();
+        horizontalLayout.setJustifyContentMode(FlexComponent.JustifyContentMode.START);
+        horizontalLayout.setSpacing(false);
+        horizontalLayout.setMargin(false);
+        horizontalLayout.setPadding(false);
+
         for (int i = 0; i < values.size(); i++) {
             ImportExportJsonObject value = values.get(i);
-            Grid<Item> items = new Grid<>(Item.class, false);
-            items.addThemeVariants(GridVariant.LUMO_NO_BORDER,
-                    GridVariant.LUMO_NO_ROW_BORDERS, GridVariant.LUMO_ROW_STRIPES);
-            items.setItems(value.getItems());
-            items.addColumn(item -> item.getName()).setHeader("Nazwa").setWidth("200px").setFlexGrow(0);
-            items.addColumn(item -> item.getQuantity()).setHeader("Ilość").setAutoWidth(true);
-            AccordionPanel ap = new AccordionPanel(getGridColumnLabel(value.getHero(), i), items);
-            accordion.add(ap);
+            VerticalLayout characterColumn = new VerticalLayout();
+            characterColumn.setSpacing(false);
+            characterColumn.setMargin(false);
+            characterColumn.setPadding(false);
+            characterColumn.setWidth(300, Unit.PIXELS);
+            characterColumn.add(getGridColumnLabel(value.getHero(), i));
+
+            ListBox<Item> lb = new ListBox<Item>();
+            lb.setItems(value.getItems());
+            lb.setReadOnly(true);
+            lb.setRenderer(new ComponentRenderer<>(item -> {
+                HorizontalLayout row = new HorizontalLayout();
+                row.setAlignItems(FlexComponent.Alignment.CENTER);
+
+                Span name = new Span(item.getName());
+                Span profession = new Span("Ilość:" + item.getQuantity());
+                profession.getStyle()
+                        .set("color", "#dcdcdc")
+                        .set("font-size", "small");
+
+                VerticalLayout column = new VerticalLayout(name, profession);
+                column.setPadding(false);
+                column.setSpacing(false);
+
+                row.add(column);
+                row.getStyle().set("line-height", "var(--lumo-line-height-m)");
+                return row;
+
+            }));
+            characterColumn.add(lb);
+            horizontalLayout.add(characterColumn);
         }
-        return accordion;
+        return horizontalLayout;
     }
 
-    private Accordion createWeaponAccordeon(List<ImportExportJsonObject> values) {
-        Accordion accordion = new Accordion();
-        accordion.close();
+    private Component createWeaponAccordeon(List<ImportExportJsonObject> values) {
+        HorizontalLayout horizontalLayout = new HorizontalLayout();
+        horizontalLayout.setJustifyContentMode(FlexComponent.JustifyContentMode.START);
+        horizontalLayout.setSpacing(false);
+        horizontalLayout.setMargin(false);
+        horizontalLayout.setPadding(false);
+
         for (int i = 0; i < values.size(); i++) {
             ImportExportJsonObject value = values.get(i);
-            Grid<Weapon> waepon = new Grid<>(Weapon.class, false);
-            waepon.addThemeVariants(GridVariant.LUMO_NO_BORDER,
-                    GridVariant.LUMO_NO_ROW_BORDERS, GridVariant.LUMO_ROW_STRIPES);
-            waepon.setItems(value.getWeapons());
-            waepon.addColumn("weaponName").setHeader("Nazwa").setWidth("200px").setFlexGrow(0);
-            waepon.addColumn("attribs").setHeader("Cechy").setWidth("300px").setFlexGrow(1);
-            waepon.addColumn("damage").setHeader("Obrażenia").setWidth("150px").setFlexGrow(0);
-            waepon.addColumn(weapon -> weapon.getRange().getLabel()).setHeader("Zasięg").setWidth("150px").setFlexGrow(0);
-            AccordionPanel ap = new AccordionPanel(getGridColumnLabel(value.getHero(), i), waepon);
-            accordion.add(ap);
+            VerticalLayout characterColumn = new VerticalLayout();
+            characterColumn.setSpacing(false);
+            characterColumn.setMargin(false);
+            characterColumn.setPadding(false);
+            characterColumn.setWidth(300, Unit.PIXELS);
+            characterColumn.add(getGridColumnLabel(value.getHero(), i));
+
+            ListBox<Weapon> lb = new ListBox<Weapon>();
+            lb.setItems(value.getWeapons());
+            lb.setReadOnly(true);
+            lb.setRenderer(new ComponentRenderer<>(advSkill -> {
+                HorizontalLayout row = new HorizontalLayout();
+                row.setAlignItems(FlexComponent.Alignment.CENTER);
+
+                Span name = new Span(advSkill.getWeaponName() + getDetails("Obrażenia:" + advSkill.getDamage()));
+                Span profession = new Span(advSkill.getAttribs());
+                profession.getStyle()
+                        .set("color", "#dcdcdc")
+                        .set("font-size", "small");
+
+                VerticalLayout column = new VerticalLayout(name, profession);
+                column.setPadding(false);
+                column.setSpacing(false);
+
+                row.add(column);
+                row.getStyle().set("line-height", "var(--lumo-line-height-m)");
+                return row;
+
+            }));
+            characterColumn.add(lb);
+            horizontalLayout.add(characterColumn);
         }
-        return accordion;
+        return horizontalLayout;
     }
 
     private Component createArmoryAccordeon(List<ImportExportJsonObject> values) {
         HorizontalLayout horizontalLayout = new HorizontalLayout();
+        horizontalLayout.setJustifyContentMode(FlexComponent.JustifyContentMode.START);
+        horizontalLayout.setSpacing(false);
+        horizontalLayout.setMargin(false);
+        horizontalLayout.setPadding(false);
+
         for (int i = 0; i < values.size(); i++) {
             ImportExportJsonObject value = values.get(i);
-            VerticalLayout verticalLayout = new VerticalLayout();
-            verticalLayout.add(getGridColumnLabel(value.getHero(), i));
-            Grid<ArmoryStaff> armor = new Grid<>(ArmoryStaff.class, false);
-            armor.addThemeVariants(GridVariant.LUMO_NO_BORDER,
-                    GridVariant.LUMO_NO_ROW_BORDERS, GridVariant.LUMO_ROW_STRIPES);
-            armor.setItems(value.getArmoryStaffsList());
-            armor.addColumn(armoryStaff -> armoryStaff.getPlace().getLabel(), "place").setWidth("100px").setFlexGrow(0);
-            armor.addColumn("armorName").setHeader("Nazwa").setWidth("200px").setFlexGrow(0);
-            armor.addColumn(armoryStaff -> armoryStaff.getArmorPoints()).setHeader("Punkty obrony").setWidth("100px").setFlexGrow(0);
-            verticalLayout.add(armor);
-            horizontalLayout.add(verticalLayout);
+            VerticalLayout characterColumn = new VerticalLayout();
+            characterColumn.setSpacing(false);
+            characterColumn.setMargin(false);
+            characterColumn.setPadding(false);
+            characterColumn.setWidth(300, Unit.PIXELS);
+            characterColumn.add(getGridColumnLabel(value.getHero(), i));
+
+            ListBox<ArmoryStaff> lb = new ListBox<ArmoryStaff>();
+            lb.setItems(value.getArmoryStaffsList());
+            lb.setReadOnly(true);
+            lb.setRenderer(new ComponentRenderer<>(armoryStaff -> {
+                HorizontalLayout row = new HorizontalLayout();
+                row.setAlignItems(FlexComponent.Alignment.CENTER);
+
+                Span name = new Span(armoryStaff.getArmorName() + getDetails(armoryStaff.getPlace().name()));
+                Span profession = new Span("Punkty pancerza:" + armoryStaff.getArmorPoints());
+                profession.getStyle()
+                        .set("color", "#dcdcdc")
+                        .set("font-size", "small");
+
+                VerticalLayout column = new VerticalLayout(name, profession);
+                column.setPadding(false);
+                column.setSpacing(false);
+
+                row.add(column);
+                row.getStyle().set("line-height", "var(--lumo-line-height-m)");
+                return row;
+
+            }));
+            characterColumn.add(lb);
+            horizontalLayout.add(characterColumn);
         }
         return horizontalLayout;
     }
 
     private Component createTalentsAccordeon(List<ImportExportJsonObject> values) {
         HorizontalLayout horizontalLayout = new HorizontalLayout();
+        horizontalLayout.setJustifyContentMode(FlexComponent.JustifyContentMode.START);
+        horizontalLayout.setSpacing(false);
+        horizontalLayout.setMargin(false);
+        horizontalLayout.setPadding(false);
+
         for (int i = 0; i < values.size(); i++) {
             ImportExportJsonObject value = values.get(i);
-            VerticalLayout verticalLayout = new VerticalLayout();
-            verticalLayout.add(getGridColumnLabel(value.getHero(), i));
-            Grid<Talent> talents = new Grid<>(Talent.class, false);
-            talents.addThemeVariants(GridVariant.LUMO_NO_BORDER,
-                    GridVariant.LUMO_NO_ROW_BORDERS, GridVariant.LUMO_ROW_STRIPES);
-            talents.setItems(value.getTalents());
-            talents.addColumn("name").setHeader("Nazwa").setWidth("200px").setFlexGrow(0);
-            talents.addColumn("total").setHeader("Poziom").setAutoWidth(true).setWidth("200px").setFlexGrow(0);
-            verticalLayout.add(talents);
-            horizontalLayout.add(verticalLayout);
+            VerticalLayout characterColumn = new VerticalLayout();
+            characterColumn.setSpacing(false);
+            characterColumn.setMargin(false);
+            characterColumn.setPadding(false);
+            characterColumn.setWidth(300, Unit.PIXELS);
+            characterColumn.add(getGridColumnLabel(value.getHero(), i));
+
+            ListBox<Talent> lb = new ListBox<Talent>();
+            lb.setItems(value.getTalents());
+            lb.setReadOnly(true);
+            lb.setRenderer(new ComponentRenderer<>(talent -> {
+                HorizontalLayout row = new HorizontalLayout();
+                row.setAlignItems(FlexComponent.Alignment.CENTER);
+
+                Span name = new Span(talent.getName());
+                Span profession = new Span("Poziom:" + talent.getAdvance());
+                profession.getStyle()
+                        .set("color", "#dcdcdc")
+                        .set("font-size", "small");
+
+                VerticalLayout column = new VerticalLayout(name, profession);
+                column.setPadding(false);
+                column.setSpacing(false);
+
+                row.add(column);
+                row.getStyle().set("line-height", "var(--lumo-line-height-m)");
+                return row;
+
+            }));
+            characterColumn.add(lb);
+            horizontalLayout.add(characterColumn);
         }
         return horizontalLayout;
     }
 
     private Component createAdvencedSkillsAccordeon(List<ImportExportJsonObject> values) {
         HorizontalLayout horizontalLayout = new HorizontalLayout();
+        horizontalLayout.setJustifyContentMode(FlexComponent.JustifyContentMode.START);
+        horizontalLayout.setSpacing(false);
+        horizontalLayout.setMargin(false);
+        horizontalLayout.setPadding(false);
+
         for (int i = 0; i < values.size(); i++) {
             ImportExportJsonObject value = values.get(i);
-            VerticalLayout verticalLayout = new VerticalLayout();
-            verticalLayout.add(getGridColumnLabel(value.getHero(), i));
+            VerticalLayout characterColumn = new VerticalLayout();
+            characterColumn.setSpacing(false);
+            characterColumn.setMargin(false);
+            characterColumn.setPadding(false);
+            characterColumn.setWidth(300, Unit.PIXELS);
+            characterColumn.add(getGridColumnLabel(value.getHero(), i));
 
-            Grid<Skill> advSkillGrid = new Grid<>(Skill.class, false);
-            advSkillGrid.addThemeVariants(GridVariant.LUMO_NO_BORDER,
-                    GridVariant.LUMO_NO_ROW_BORDERS, GridVariant.LUMO_ROW_STRIPES);
-            advSkillGrid.setItems(value.getAdvancedSkills());
-            advSkillGrid.addColumn("label").setHeader("Nazwa").setWidth("200px").setFlexGrow(0);
-            advSkillGrid.addColumn("advances").setHeader("Poziom").setAutoWidth(true).setWidth("200px").setFlexGrow(0);
-            verticalLayout.add(advSkillGrid);
-            horizontalLayout.add(verticalLayout);
+            ListBox<Skill> lb = new ListBox<Skill>();
+            lb.setItems(value.getAdvancedSkills());
+            lb.setReadOnly(true);
+            lb.setRenderer(new ComponentRenderer<>(advSkill -> {
+                HorizontalLayout row = new HorizontalLayout();
+                row.setAlignItems(FlexComponent.Alignment.CENTER);
+
+                Span name = new Span(advSkill.getName() + getSpecialization(advSkill));
+                Span profession = new Span("Poziom:" + advSkill.getAdvance());
+                profession.getStyle()
+                        .set("color", "#dcdcdc")
+                        .set("font-size", "small");
+
+                VerticalLayout column = new VerticalLayout(name, profession);
+                column.setPadding(false);
+                column.setSpacing(false);
+
+                row.add(column);
+                row.getStyle().set("line-height", "var(--lumo-line-height-m)");
+                return row;
+
+            }));
+            characterColumn.add(lb);
+            horizontalLayout.add(characterColumn);
         }
         return horizontalLayout;
+    }
+
+    private String getSpecialization(Skill advSkill) {
+        if (advSkill.getSpecialisation() != null && !advSkill.getSpecialisation().isEmpty())
+            return " (" + advSkill.getSpecialisation() + ")";
+        return "";
+    }
+
+    private String getDetails(String details) {
+        if (details != null && !details.isEmpty())
+            return " (" + details + ")";
+        return "";
     }
 
     private Component createBasicSkillsDataTable(List<List<Skill>> collect, List<Hero> heroList) {
@@ -193,7 +338,7 @@ public class PlayerSessionView extends AppLayout {
         for (List<Skill> skills : collect) {
             Map<BasicSkill, Skill> mapOfSkills = new HashMap<>();
             for (Skill attrib : skills) {
-                mapOfSkills.put(BasicSkill.getByLabel(attrib.getLabel()), attrib);
+                mapOfSkills.put(BasicSkill.getByLabel(attrib.getName()), attrib);
             }
             listOfMaps.add(mapOfSkills);
         }
@@ -246,8 +391,8 @@ public class PlayerSessionView extends AppLayout {
                 GridVariant.LUMO_COLUMN_BORDERS, GridVariant.LUMO_ROW_STRIPES);
         List<GridElement> gridElements = new ArrayList<>();
         gridElements.add(getHeroRow("Imię i nazwisko", collect, Hero::getNameAndSurname));
-        gridElements.add(getHeroRow("Rasa", collect, (hero) -> hero.getRace().getLabel()));
-        gridElements.add(getHeroRow("Profesja", collect, (hero) -> hero.getProfession().getLabel()));
+        gridElements.add(getHeroRow("Rasa", collect, (hero) -> hero.getRace()));
+        gridElements.add(getHeroRow("Profesja", collect, (hero) -> hero.getProfession()));
         gridElements.add(getHeroRow("Wiek", collect, (hero) -> "" + hero.getAge()));
         gridElements.add(getHeroRow("Wzrost", collect, (hero) -> "" + hero.getHeight()));
         gridElements.add(getHeroRow("Kolor oczu", collect, Hero::getEyeColor));
@@ -281,12 +426,9 @@ public class PlayerSessionView extends AppLayout {
             label.setClassName("gridLabelTextYellow");
         } else if (idx == 3) {
             label.setClassName("gridLabelTextBlue");
-        } else if (idx == 4) {
-            label.setClassName("gridLabelTextViolet");
         } else {
-            label.setClassName("gridLabelTextRed");
+            label.setClassName("gridLabelTextViolet");
         }
-
 
         label.setId("gridLabelId");
         return label;

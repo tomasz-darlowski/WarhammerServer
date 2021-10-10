@@ -9,9 +9,9 @@ public class Hero {
     private int luckPoints;
     private String name;
     private String surname;
-    private Race race;
-    private Klass clazz;
-    private Profession profession;
+    private String race;
+    private String clazz;
+    private String profession;
     private String professionLevel;
     private String status;
     private int age = 15;
@@ -56,30 +56,6 @@ public class Hero {
 
     public void setSurname(String surname) {
         this.surname = surname;
-    }
-
-    public Race getRace() {
-        return race;
-    }
-
-    public void setRace(Race race) {
-        this.race = race;
-    }
-
-    public Klass getClazz() {
-        return clazz;
-    }
-
-    public void setClazz(Klass clazz) {
-        this.clazz = clazz;
-    }
-
-    public Profession getProfession() {
-        return profession;
-    }
-
-    public void setProfession(Profession profession) {
-        this.profession = profession;
     }
 
     public String getProfessionLevel() {
@@ -176,6 +152,30 @@ public class Hero {
 
     public void setTotalExp(int totalExp) {
         this.totalExp = totalExp;
+    }
+
+    public String getRace() {
+        return race;
+    }
+
+    public void setRace(String race) {
+        this.race = race;
+    }
+
+    public String getClazz() {
+        return clazz;
+    }
+
+    public void setClazz(String clazz) {
+        this.clazz = clazz;
+    }
+
+    public String getProfession() {
+        return profession;
+    }
+
+    public void setProfession(String profession) {
+        this.profession = profession;
     }
 
     @Override
