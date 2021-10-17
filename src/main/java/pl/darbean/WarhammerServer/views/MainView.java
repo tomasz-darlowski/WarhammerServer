@@ -8,13 +8,16 @@ import com.vaadin.flow.component.tabs.Tabs;
 import com.vaadin.flow.router.Route;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
+import pl.darbean.WarhammerServer.views.fragments.LeftMenu;
 
+import javax.annotation.security.PermitAll;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.List;
 
 @Route(value = "")
+@PermitAll
 public class MainView extends AppLayout {
 
     public MainView(@Autowired Environment environment) {
@@ -26,7 +29,7 @@ public class MainView extends AppLayout {
         setDrawerOpened(true);
         DrawerToggle drawerToggle = new DrawerToggle();
         addToNavbar(drawerToggle);
-        addToNavbar(new Label("Warhammer Player Server"), tabs);
+        addToNavbar(new Label("Warhammer Server"), tabs);
 
         setContent(new Label("Adres servera: " + getAddress() + ":" + environment.getProperty("server.port")));
     }

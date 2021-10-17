@@ -1,6 +1,6 @@
-package pl.darbean.WarhammerServer.views;
+package pl.darbean.WarhammerServer.views.viewModel;
 
-public class Fighter implements Comparable {
+public class Fighter implements Comparable<Fighter> {
 
     String name;
     int initiative;
@@ -70,7 +70,7 @@ public class Fighter implements Comparable {
     }
 
     @Override
-    public int compareTo(Object o) {
-        return Integer.compare(this.initiative, ((Fighter) o).initiative);
+    public int compareTo(Fighter o) {
+        return Integer.compare(this.initiative, o.initiative);
     }
 }

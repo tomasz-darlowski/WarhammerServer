@@ -1,4 +1,4 @@
-package pl.darbean.WarhammerServer.views;
+package pl.darbean.WarhammerServer.views.viewModel;
 
 public class FighterFormModel {
     String type;

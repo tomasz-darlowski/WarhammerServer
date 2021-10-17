@@ -22,12 +22,17 @@ import pl.darbean.WarhammerServer.controller.GameController;
 import pl.darbean.WarhammerServer.model.ImportExportJsonObject;
 import pl.darbean.WarhammerServer.views.fragments.EnemyForm;
 import pl.darbean.WarhammerServer.views.fragments.FightRowElement;
+import pl.darbean.WarhammerServer.views.fragments.LeftMenu;
+import pl.darbean.WarhammerServer.views.viewModel.Fighter;
+import pl.darbean.WarhammerServer.views.viewModel.FighterFormModel;
 
+import javax.annotation.security.RolesAllowed;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
 @Route(value = "/fight")
+@RolesAllowed("ADMIN")
 public class FightView extends AppLayout {
 
     private static final Map<String, Fighter> initiativeMap = new HashMap<>();
@@ -86,8 +91,8 @@ public class FightView extends AppLayout {
         typesQuantity.setHasControls(true);
         typesQuantity.setValue(fighterModelList.size());
         typesQuantity.addValueChangeListener(event -> {
-            if (fighterModelList.size() > event.getValue().intValue()) {
-                FighterFormModel[] ts = Arrays.copyOf(fighterModelList.toArray(new FighterFormModel[]{}), event.getValue().intValue());
+            if (fighterModelList.size() > event.getValue()) {
+                FighterFormModel[] ts = Arrays.copyOf(fighterModelList.toArray(new FighterFormModel[]{}), event.getValue());
                 fighterModelList.retainAll(new ArrayList<>(Arrays.asList(ts)));
             } else {
                 fighterModelList.add(new FighterFormModel());
@@ -144,8 +149,7 @@ public class FightView extends AppLayout {
     private Component[] createForm() {
 
         List<Component> layouts = new ArrayList<>();
-        for (int i = 0; i < fighterModelList.size(); i++) {
-            FighterFormModel fighterFormModel = fighterModelList.get(i);
+        for (FighterFormModel fighterFormModel : fighterModelList) {
             HorizontalLayout row = new EnemyForm(fighterFormModel, initiativeMap);
             layouts.add(row);
         }
@@ -172,7 +176,7 @@ public class FightView extends AppLayout {
                 if (fighter.isPlayer()) {
                     return new FightRowElement(fighter, initiativeMap.values().stream().filter(fighter1 -> !fighter1.isPlayer()).map(Fighter::getName).collect(Collectors.toList()));
                 } else {
-                    return new FightRowElement(fighter, initiativeMap.values().stream().filter(fighter1 -> fighter1.isPlayer()).map(Fighter::getName).collect(Collectors.toList()));
+                    return new FightRowElement(fighter, initiativeMap.values().stream().filter(Fighter::isPlayer).map(Fighter::getName).collect(Collectors.toList()));
                 }
             }));
             verticalLayout.add(listBox);

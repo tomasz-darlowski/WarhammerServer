@@ -1,8 +1,8 @@
-package pl.darbean.WarhammerServer.views;
+package pl.darbean.WarhammerServer.views.viewModel;
 
 public enum HeroCategories {
 
-    BASIC_DATA("Dosier"),
+    BASIC_DATA("Postać"),
     CECHY("Cechy"),
     BASIC_SKILL("Umiejętności podstawowe"),
     ADVENCED_SKILLS("Umiejętności zaawansowane"),
