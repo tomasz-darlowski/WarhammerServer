@@ -1,12 +1,14 @@
 package pl.darbean.WarhammerServer.views;
 
 import com.vaadin.flow.component.Component;
+import com.vaadin.flow.component.Text;
 import com.vaadin.flow.component.Unit;
 import com.vaadin.flow.component.applayout.AppLayout;
 import com.vaadin.flow.component.applayout.DrawerToggle;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.dependency.CssImport;
+import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.grid.GridVariant;
 import com.vaadin.flow.component.html.Anchor;
@@ -20,8 +22,6 @@ import com.vaadin.flow.component.tabs.Tab;
 import com.vaadin.flow.component.tabs.Tabs;
 import com.vaadin.flow.data.renderer.ComponentRenderer;
 import com.vaadin.flow.router.Route;
-import com.vaadin.flow.theme.Theme;
-import com.vaadin.flow.theme.material.Material;
 import pl.darbean.WarhammerServer.controller.GameController;
 import pl.darbean.WarhammerServer.model.ImportExportJsonObject;
 import pl.darbean.WarhammerServer.model.attributes.Attrib;
@@ -42,11 +42,8 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 @Route(value = "player/session")
-@Theme(value = Material.class, variant = Material.DARK)
 @CssImport("./style.css")
 public class PlayerSessionView extends AppLayout {
-
-    private int idx = 0;
 
     public PlayerSessionView() {
         List<ImportExportJsonObject> values = new ArrayList<>(GameController.sessionHeroes.values());
@@ -60,11 +57,20 @@ public class PlayerSessionView extends AppLayout {
         }
         Tabs tabs = new Tabs(tabsList.toArray(new Tab[]{}));
         Button reset_graczy = new Button("Reset graczy");
+
+        Dialog dialog = new Dialog();
+        dialog.add(new Text("Czy na pewno chcesz zresetować sesje?"));
+        dialog.add(reset_graczy);
+
         reset_graczy.addThemeVariants(ButtonVariant.LUMO_SMALL);
         reset_graczy.addClickListener(buttonClickEvent -> {
             GameController.sessionHeroes.clear();
         });
-        tabs.add(reset_graczy);
+
+        Button tabBtn = new Button("Reset sesji");
+        tabBtn.addClickListener(event -> dialog.open());
+        tabs.add(tabBtn);
+
         tabs.setOrientation(Tabs.Orientation.HORIZONTAL);
         setPrimarySection(AppLayout.Section.DRAWER);
         addToDrawer(LeftMenu.getLeftMenu());
@@ -417,6 +423,11 @@ public class PlayerSessionView extends AppLayout {
 
     private Label getGridColumnLabel(Hero hero, int idx) {
         Label label = new Label(hero.getNameAndSurname());
+
+        int id = idx;
+        if (idx > 4) {
+            id = idx % 5;
+        }
 
         if (idx == 0) {
             label.setClassName("gridLabelTextRed");

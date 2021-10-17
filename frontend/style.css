@@ -22,3 +22,23 @@
     color: violet;
     font-size: large;
 }
+
+.backgroundRed {
+    background-color: red;
+}
+
+.backgroundGreen {
+    background-color: green;
+}
+
+.backgroundYellow {
+    background-color: yellow;
+}
+
+.backgroundBlue {
+    background-color: cyan;
+}
+
+.backgroundViolet {
+    background-color: violet;
+}

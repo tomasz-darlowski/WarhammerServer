@@ -14,6 +14,7 @@ import pl.darbean.WarhammerServer.model.inventory.Weapon;
 import pl.darbean.WarhammerServer.model.skills.Skill;
 
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 @RestController
@@ -22,7 +23,7 @@ public class GameController {
     private Logger logger = LoggerFactory.getLogger(GameController.class);
 
 
-    public final static Map<String, ImportExportJsonObject> sessionHeroes = new HashMap<>();
+    public final static LinkedHashMap<String, ImportExportJsonObject> sessionHeroes = new LinkedHashMap<>();
 
     @PostMapping(value = "/postCharacterData", consumes = "application/json")
     public @ResponseBody
