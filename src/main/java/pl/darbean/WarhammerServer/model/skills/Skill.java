@@ -1,28 +1,19 @@
 package pl.darbean.WarhammerServer.model.skills;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import pl.darbean.WarhammerServer.model.attributes.CharacterAttribute;
 
 public class Skill {
 
-    public static final String SKILL_ID = "SKILL_ID";
-
     private CharacterAttribute attribute;
     private String name;
-    private int advances = 0;
+    private int advances;
     private String description;
-    private String specialisation = "";
-    private boolean isBasicSkill = false;
+    private String specialisation;
+    @JsonProperty("isBasicSkill")
+    private boolean isBasicSkill;
 
     public Skill() {
-    }
-
-    public Skill(BasicSkill skill) {
-        this.attribute = skill.getBasicAttribute();
-        this.name = skill.getLabel();
-        this.advances = 0;
-        this.description = "";
-        this.specialisation = "";
-        this.isBasicSkill = true;
     }
 
     public CharacterAttribute getAttribute() {

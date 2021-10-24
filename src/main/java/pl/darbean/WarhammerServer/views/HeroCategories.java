@@ -4,8 +4,7 @@ public enum HeroCategories {
 
     BASIC_DATA("Dosier"),
     CECHY("Cechy"),
-    BASIC_SKILL("Umiejętności podstawowe"),
-    ADVENCED_SKILLS("Umiejętności zaawansowane"),
+    SKILLS("Umiejętności"),
     TALENTS("Talenty"),
     ARMOR("Zbroja"),
     WEAPON("Broń"),

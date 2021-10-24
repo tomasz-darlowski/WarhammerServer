@@ -13,7 +13,9 @@ import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.IntegerField;
 import pl.darbean.WarhammerServer.views.Fighter;
 
+import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class FightRowElement extends HorizontalLayout {
 
@@ -57,32 +59,61 @@ public class FightRowElement extends HorizontalLayout {
 
     private Component getStates() {
         VerticalLayout verticalLayout = new VerticalLayout();
-
+        Details details = new Details("Stany", verticalLayout);
         HorizontalLayout hl = new HorizontalLayout();
-        hl.add(new Checkbox("Powalony"));
-        hl.add(new Checkbox("Nieprzytomny"));
-        hl.add(new Checkbox("Zaskoczony"));
-        hl.add(new Checkbox("Pochwycony"));
+        hl.add(getCheckbox("Powalony", details));
+        hl.add(getCheckbox("Nieprzytomny", details));
+        hl.add(getCheckbox("Zaskoczony", details));
+        hl.add(getCheckbox("Pochwycony", details));
         verticalLayout.add(hl);
 
         HorizontalLayout hl2 = new HorizontalLayout();
-        hl2.add(new Checkbox("Krwawiący"));
-        hl2.add(new Checkbox("Oszołomiony"));
-        hl2.add(new Checkbox("Zatruty"));
-        hl2.add(new Checkbox("Spanikowany"));
+        hl2.add(getCheckbox("Krwawiący", details));
+        hl2.add(getCheckbox("Oszołomiony", details));
+        hl2.add(getCheckbox("Zatruty", details));
+        hl2.add(getCheckbox("Spanikowany", details));
         verticalLayout.add(hl2);
 
         HorizontalLayout hl3 = new HorizontalLayout();
-        hl3.add(new Checkbox("Ogłuszony"));
-        hl3.add(new Checkbox("Oślepiony"));
-        hl3.add(new Checkbox("Podpalony"));
-        hl3.add(new Checkbox("Zmęczony"));
+        hl3.add(getCheckbox("Ogłuszony", details));
+        hl3.add(getCheckbox("Oślepiony", details));
+        hl3.add(getCheckbox("Podpalony", details));
+        hl3.add(getCheckbox("Zmęczony", details));
         verticalLayout.add(hl3);
 
-        Details details = new Details("Stany", verticalLayout);
         details.setOpened(false);
 
         return details;
+    }
+
+    private Checkbox getCheckbox(String label, Details detail) {
+        Checkbox checkbox = new Checkbox(label);
+        checkbox.addValueChangeListener(event -> {
+            String summaryText = detail.getSummaryText();
+            if (summaryText.equals("Stany")) {
+                detail.setSummaryText(label);
+            } else {
+                if (event.getValue()) {
+                    //add text
+                    detail.setSummaryText(detail.getSummaryText() + "," + label);
+                } else {
+                    String[] split = detail.getSummaryText().split(",");
+                    List<String> collect = Arrays.asList(split).stream().filter(state -> !state.equals(label)).collect(Collectors.toList());
+                    if (collect.isEmpty()) {
+                        detail.setSummaryText("Stany");
+                    } else {
+                        StringBuilder sb = new StringBuilder("");
+                        for (String s : collect) {
+                            sb.append(s);
+                            sb.append(",");
+                        }
+                        detail.setSummaryText(sb.toString());
+
+                    }
+                }
+            }
+        });
+        return checkbox;
     }
 
     private String getDetails(String details) {

@@ -15,29 +15,12 @@ public class ImportExportJsonObject {
 
     private Hero hero;
     private List<Attrib> attribs;
-    private List<Skill> basicSkills;
-    private List<Skill> advancedSkills;
+    private List<Skill> skills;
     private List<Talent> talents;
     private List<ArmoryStaff> armoryStaffsList;
     private Pouch pouch;
     private List<Item> items;
     private List<Weapon> weapons;
-
-    public ImportExportJsonObject() {
-
-    }
-
-    public ImportExportJsonObject(Hero hero, List<Attrib> attribs, List<Skill> basicSkills, List<Skill> advancedSkills, List<Talent> talents, List<ArmoryStaff> armoryStaffsList, Pouch pouch, List<Item> items, List<Weapon> weapons) {
-        this.hero = hero;
-        this.attribs = attribs;
-        this.basicSkills = basicSkills;
-        this.advancedSkills = advancedSkills;
-        this.talents = talents;
-        this.armoryStaffsList = armoryStaffsList;
-        this.pouch = pouch;
-        this.items = items;
-        this.weapons = weapons;
-    }
 
     public Hero getHero() {
         return hero;
@@ -55,20 +38,12 @@ public class ImportExportJsonObject {
         this.attribs = attribs;
     }
 
-    public List<Skill> getBasicSkills() {
-        return basicSkills;
+    public List<Skill> getSkills() {
+        return skills;
     }
 
-    public void setBasicSkills(List<Skill> basicSkills) {
-        this.basicSkills = basicSkills;
-    }
-
-    public List<Skill> getAdvancedSkills() {
-        return advancedSkills;
-    }
-
-    public void setAdvancedSkills(List<Skill> advancedSkills) {
-        this.advancedSkills = advancedSkills;
+    public void setSkills(List<Skill> skills) {
+        this.skills = skills;
     }
 
     public List<Talent> getTalents() {

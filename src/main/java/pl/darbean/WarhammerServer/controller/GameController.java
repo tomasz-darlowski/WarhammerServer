@@ -16,6 +16,7 @@ import pl.darbean.WarhammerServer.model.skills.Skill;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @RestController
 public class GameController {
@@ -46,10 +47,10 @@ public class GameController {
         for (Attrib attrib : heroData.getAttribs()) {
             attributeMap.put(attrib.getAttribute(), attrib);
         }
-        for (Skill basicSkill : heroData.getBasicSkills()) {
+        for (Skill basicSkill : heroData.getSkills().stream().filter(Skill::isBasicSkill).collect(Collectors.toList())) {
             basicSkill.setAdvance(basicSkill.getAdvance() + attributeMap.get(basicSkill.getAttribute()).getTotal());
         }
-        for (Skill advSkill : heroData.getAdvancedSkills()) {
+        for (Skill advSkill : heroData.getSkills().stream().filter(skl -> !skl.isBasicSkill()).collect(Collectors.toList())) {
             advSkill.setAdvance(advSkill.getAdvance() + attributeMap.get(advSkill.getAttribute()).getTotal());
         }
         for (ArmoryStaff armor : heroData.getArmoryStaffsList()) {

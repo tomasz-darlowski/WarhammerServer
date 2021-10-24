@@ -34,10 +34,7 @@ import pl.darbean.WarhammerServer.model.skills.BasicSkill;
 import pl.darbean.WarhammerServer.model.skills.Skill;
 import pl.darbean.WarhammerServer.model.talents.Talent;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -65,6 +62,7 @@ public class PlayerSessionView extends AppLayout {
         reset_graczy.addThemeVariants(ButtonVariant.LUMO_SMALL);
         reset_graczy.addClickListener(buttonClickEvent -> {
             GameController.sessionHeroes.clear();
+            dialog.close();
         });
 
         Button tabBtn = new Button("Reset sesji");
@@ -90,10 +88,8 @@ public class PlayerSessionView extends AppLayout {
                 return createHeroDataTable(heroList);
             case CECHY:
                 return createAttribsDataTable(values.stream().map(importExportJsonObject -> importExportJsonObject.getAttribs()).collect(Collectors.toList()), heroList);
-            case BASIC_SKILL:
-                return createBasicSkillsDataTable(values.stream().map(importExportJsonObject -> importExportJsonObject.getBasicSkills()).collect(Collectors.toList()), heroList);
-            case ADVENCED_SKILLS:
-                return createAdvencedSkillsAccordeon(values);
+            case SKILLS:
+                return createSkillsAccordeon(values);
             case TALENTS:
                 return createTalentsAccordeon(values);
             case ARMOR:
@@ -283,6 +279,51 @@ public class PlayerSessionView extends AppLayout {
         return horizontalLayout;
     }
 
+    private Component createSkillsAccordeon(List<ImportExportJsonObject> values) {
+        HorizontalLayout horizontalLayout = new HorizontalLayout();
+        horizontalLayout.setJustifyContentMode(FlexComponent.JustifyContentMode.START);
+        horizontalLayout.setSpacing(false);
+        horizontalLayout.setMargin(false);
+        horizontalLayout.setPadding(false);
+
+        for (int i = 0; i < values.size(); i++) {
+            ImportExportJsonObject value = values.get(i);
+            List<Skill> collect = value.getSkills().stream().sorted(Comparator.comparing(Skill::getName)).collect(Collectors.toList());
+            VerticalLayout characterColumn = new VerticalLayout();
+            characterColumn.setSpacing(false);
+            characterColumn.setMargin(false);
+            characterColumn.setPadding(false);
+            characterColumn.setWidth(300, Unit.PIXELS);
+            characterColumn.add(getGridColumnLabel(value.getHero(), i));
+
+            ListBox<Skill> lb = new ListBox<>();
+            lb.setItems(collect);
+            lb.setReadOnly(true);
+            lb.setRenderer(new ComponentRenderer<>(advSkill -> {
+                HorizontalLayout row = new HorizontalLayout();
+                row.setAlignItems(FlexComponent.Alignment.CENTER);
+
+                Span name = new Span(advSkill.getName() + getSpecialization(advSkill));
+                Span profession = new Span("Poziom:" + advSkill.getAdvance());
+                profession.getStyle()
+                        .set("color", "#dcdcdc")
+                        .set("font-size", "small");
+
+                VerticalLayout column = new VerticalLayout(name, profession);
+                column.setPadding(false);
+                column.setSpacing(false);
+
+                row.add(column);
+                row.getStyle().set("line-height", "var(--lumo-line-height-m)");
+                return row;
+
+            }));
+            characterColumn.add(lb);
+            horizontalLayout.add(characterColumn);
+        }
+        return horizontalLayout;
+    }
+
     private Component createAdvencedSkillsAccordeon(List<ImportExportJsonObject> values) {
         HorizontalLayout horizontalLayout = new HorizontalLayout();
         horizontalLayout.setJustifyContentMode(FlexComponent.JustifyContentMode.START);
@@ -292,6 +333,7 @@ public class PlayerSessionView extends AppLayout {
 
         for (int i = 0; i < values.size(); i++) {
             ImportExportJsonObject value = values.get(i);
+            List<Skill> collect = value.getSkills().stream().filter(el -> !el.isBasicSkill()).collect(Collectors.toList());
             VerticalLayout characterColumn = new VerticalLayout();
             characterColumn.setSpacing(false);
             characterColumn.setMargin(false);
@@ -299,8 +341,8 @@ public class PlayerSessionView extends AppLayout {
             characterColumn.setWidth(300, Unit.PIXELS);
             characterColumn.add(getGridColumnLabel(value.getHero(), i));
 
-            ListBox<Skill> lb = new ListBox<Skill>();
-            lb.setItems(value.getAdvancedSkills());
+            ListBox<Skill> lb = new ListBox<>();
+            lb.setItems(collect);
             lb.setReadOnly(true);
             lb.setRenderer(new ComponentRenderer<>(advSkill -> {
                 HorizontalLayout row = new HorizontalLayout();

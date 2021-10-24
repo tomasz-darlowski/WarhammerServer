@@ -5,7 +5,7 @@ public class Talent {
     public static final String TALENT_ID = "TALENT_ID";
 
     private String name;
-    private int level = 0;
+    private int level;
     private String description;
 
     public Talent() {
