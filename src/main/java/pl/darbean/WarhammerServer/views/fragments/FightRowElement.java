@@ -11,7 +11,7 @@ import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.IntegerField;
-import pl.darbean.WarhammerServer.views.Fighter;
+import pl.darbean.WarhammerServer.views.viewModel.Fighter;
 
 import java.util.Arrays;
 import java.util.List;
@@ -24,7 +24,7 @@ public class FightRowElement extends HorizontalLayout {
         super();
         setSpacing(false);
         setPadding(false);
-        Span name = null;
+        Span name;
         if (fighter.isPlayer()) {
             Label gridColumnLabel = getGridColumnLabel(fighter.getName() + getDetails("" + fighter.getInitiative()), fighter.getPlayerFighterNumber());
             name = new Span(gridColumnLabel);
@@ -43,7 +43,7 @@ public class FightRowElement extends HorizontalLayout {
         healthPoints.setValue(fighter.getHealth());
         healthPoints.setHasControls(true);
         healthPoints.addValueChangeListener(event -> {
-            if (event.getValue().intValue() == 0) {
+            if (event.getValue() == 0) {
                 this.setVisible(false);
             }
         });
@@ -130,13 +130,13 @@ public class FightRowElement extends HorizontalLayout {
             id = idx % 5;
         }
 
-        if (idx == 0) {
+        if (id == 0) {
             label.setClassName("gridLabelTextRed");
-        } else if (idx == 1) {
+        } else if (id == 1) {
             label.setClassName("gridLabelTextGreen");
-        } else if (idx == 2) {
+        } else if (id == 2) {
             label.setClassName("gridLabelTextYellow");
-        } else if (idx == 3) {
+        } else if (id == 3) {
             label.setClassName("gridLabelTextBlue");
         } else {
             label.setClassName("gridLabelTextViolet");

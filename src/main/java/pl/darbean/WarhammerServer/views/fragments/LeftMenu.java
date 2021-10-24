@@ -1,7 +1,10 @@
-package pl.darbean.WarhammerServer.views;
+package pl.darbean.WarhammerServer.views.fragments;
 
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.router.RouterLink;
+import pl.darbean.WarhammerServer.views.FightView;
+import pl.darbean.WarhammerServer.views.MainView;
+import pl.darbean.WarhammerServer.views.PlayerSessionView;
 
 public class LeftMenu {
 

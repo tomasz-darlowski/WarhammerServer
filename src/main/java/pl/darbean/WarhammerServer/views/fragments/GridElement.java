@@ -1,4 +1,4 @@
-package pl.darbean.WarhammerServer.views;
+package pl.darbean.WarhammerServer.views.fragments;
 
 public class GridElement {
     private final String label;

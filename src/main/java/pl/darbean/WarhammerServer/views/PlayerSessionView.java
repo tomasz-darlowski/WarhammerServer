@@ -34,11 +34,16 @@ import pl.darbean.WarhammerServer.model.skills.BasicSkill;
 import pl.darbean.WarhammerServer.model.skills.Skill;
 import pl.darbean.WarhammerServer.model.talents.Talent;
 
-import java.util.*;
+import javax.annotation.security.RolesAllowed;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
 @Route(value = "player/session")
+@RolesAllowed("ADMIN")
 @CssImport("./style.css")
 public class PlayerSessionView extends AppLayout {
 
@@ -47,9 +52,7 @@ public class PlayerSessionView extends AppLayout {
         List<Tab> tabsList = new ArrayList<>();
         for (HeroCategories category : HeroCategories.values()) {
             Tab e = new Tab(category.getLabel());
-            e.getElement().addEventListener("click", domEvent -> {
-                setContent(createTableForCategory(category));
-            });
+            e.getElement().addEventListener("click", domEvent -> setContent(createTableForCategory(category)));
             tabsList.add(e);
         }
         Tabs tabs = new Tabs(tabsList.toArray(new Tab[]{}));
@@ -82,7 +85,7 @@ public class PlayerSessionView extends AppLayout {
 
     private Component createTableForCategory(HeroCategories category) {
         List<ImportExportJsonObject> values = new ArrayList<>(GameController.sessionHeroes.values());
-        List<Hero> heroList = values.stream().map(importExportJsonObject -> importExportJsonObject.getHero()).collect(Collectors.toList());
+        List<Hero> heroList = values.stream().map(ImportExportJsonObject::getHero).collect(Collectors.toList());
         switch (category) {
             case BASIC_DATA:
                 return createHeroDataTable(heroList);
@@ -119,7 +122,7 @@ public class PlayerSessionView extends AppLayout {
             characterColumn.setWidth(300, Unit.PIXELS);
             characterColumn.add(getGridColumnLabel(value.getHero(), i));
 
-            ListBox<Item> lb = new ListBox<Item>();
+            ListBox<Item> lb = new ListBox<>();
             lb.setItems(value.getItems());
             lb.setReadOnly(true);
             lb.setRenderer(new ComponentRenderer<>(item -> {
@@ -163,7 +166,7 @@ public class PlayerSessionView extends AppLayout {
             characterColumn.setWidth(300, Unit.PIXELS);
             characterColumn.add(getGridColumnLabel(value.getHero(), i));
 
-            ListBox<Weapon> lb = new ListBox<Weapon>();
+            ListBox<Weapon> lb = new ListBox<>();
             lb.setItems(value.getWeapons());
             lb.setReadOnly(true);
             lb.setRenderer(new ComponentRenderer<>(advSkill -> {
@@ -207,7 +210,7 @@ public class PlayerSessionView extends AppLayout {
             characterColumn.setWidth(300, Unit.PIXELS);
             characterColumn.add(getGridColumnLabel(value.getHero(), i));
 
-            ListBox<ArmoryStaff> lb = new ListBox<ArmoryStaff>();
+            ListBox<ArmoryStaff> lb = new ListBox<>();
             lb.setItems(value.getArmoryStaffsList());
             lb.setReadOnly(true);
             lb.setRenderer(new ComponentRenderer<>(armoryStaff -> {
@@ -251,7 +254,7 @@ public class PlayerSessionView extends AppLayout {
             characterColumn.setWidth(300, Unit.PIXELS);
             characterColumn.add(getGridColumnLabel(value.getHero(), i));
 
-            ListBox<Talent> lb = new ListBox<Talent>();
+            ListBox<Talent> lb = new ListBox<>();
             lb.setItems(value.getTalents());
             lb.setReadOnly(true);
             lb.setRenderer(new ComponentRenderer<>(talent -> {
@@ -397,7 +400,7 @@ public class PlayerSessionView extends AppLayout {
                 GridVariant.LUMO_NO_ROW_BORDERS, GridVariant.LUMO_ROW_STRIPES);
         List<GridElement> gridElements = getSkillRow(CharacterAttribute.WW.getLabel(), listOfMaps, null);
         grid.setItems(gridElements);
-        grid.addColumn(gridElement -> gridElement.getLabel()).setHeader("").setWidth("200px").setFlexGrow(0);
+        grid.addColumn(GridElement::getLabel).setHeader("").setWidth("200px").setFlexGrow(0);
         for (int i = 0; i < heroList.size(); i++) {
             final int idx = i;
             grid.addColumn(gridElement -> gridElement.getValues()[idx]).setHeader(getGridColumnLabel(heroList.get(idx), idx)).setWidth("200px").setFlexGrow(0);
@@ -422,7 +425,7 @@ public class PlayerSessionView extends AppLayout {
                 GridVariant.LUMO_NO_ROW_BORDERS, GridVariant.LUMO_ROW_STRIPES);
         List<GridElement> gridElements = getAttribRow(CharacterAttribute.WW.getLabel(), listOfMaps, null);
         grid.setItems(gridElements);
-        grid.addColumn(gridElement -> gridElement.getLabel()).setHeader("").setWidth("200px").setFlexGrow(0);
+        grid.addColumn(GridElement::getLabel).setHeader("").setWidth("200px").setFlexGrow(0);
         for (int i = 0; i < heroList.size(); i++) {
             final int idx = i;
             grid.addColumn(gridElement -> gridElement.getValues()[idx]).setHeader(getGridColumnLabel(heroList.get(idx), idx)).setWidth("200px").setFlexGrow(0);
@@ -439,8 +442,8 @@ public class PlayerSessionView extends AppLayout {
                 GridVariant.LUMO_COLUMN_BORDERS, GridVariant.LUMO_ROW_STRIPES);
         List<GridElement> gridElements = new ArrayList<>();
         gridElements.add(getHeroRow("Imię i nazwisko", collect, Hero::getNameAndSurname));
-        gridElements.add(getHeroRow("Rasa", collect, (hero) -> hero.getRace()));
-        gridElements.add(getHeroRow("Profesja", collect, (hero) -> hero.getProfession()));
+        gridElements.add(getHeroRow("Rasa", collect, Hero::getRace));
+        gridElements.add(getHeroRow("Profesja", collect, Hero::getProfession));
         gridElements.add(getHeroRow("Wiek", collect, (hero) -> "" + hero.getAge()));
         gridElements.add(getHeroRow("Wzrost", collect, (hero) -> "" + hero.getHeight()));
         gridElements.add(getHeroRow("Kolor oczu", collect, Hero::getEyeColor));
@@ -471,13 +474,13 @@ public class PlayerSessionView extends AppLayout {
             id = idx % 5;
         }
 
-        if (idx == 0) {
+        if (id == 0) {
             label.setClassName("gridLabelTextRed");
-        } else if (idx == 1) {
+        } else if (id == 1) {
             label.setClassName("gridLabelTextGreen");
-        } else if (idx == 2) {
+        } else if (id == 2) {
             label.setClassName("gridLabelTextYellow");
-        } else if (idx == 3) {
+        } else if (id == 3) {
             label.setClassName("gridLabelTextBlue");
         } else {
             label.setClassName("gridLabelTextViolet");
@@ -513,8 +516,8 @@ public class PlayerSessionView extends AppLayout {
 
     private GridElement getHeroRow(String category, List<Hero> list, Function<Hero, String> valueSupplier) {
         List<String> values = new ArrayList<>();
-        for (int i = 0; i < list.size(); i++) {
-            values.add(valueSupplier.apply(list.get(i)));
+        for (Hero hero : list) {
+            values.add(valueSupplier.apply(hero));
         }
         return new GridElement(category, values.toArray(new String[]{}));
     }
